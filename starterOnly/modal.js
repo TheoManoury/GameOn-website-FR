@@ -10,8 +10,12 @@ function editNav() {
 // DOM Elements
 const modalBg = document.querySelector(".bground")
 const modalBtn = document.querySelectorAll(".modal-btn")
-const formData = document.querySelectorAll(".formData")
 const closeModalBtn = document.getElementById("close-button")
+const form = document.querySelector("form")
+const formData = document.querySelectorAll(".formData")
+const formDataToValidate = document.querySelectorAll(
+  ".formData[data-validation-type]:not([data-validation-type=none])"
+)
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal))
@@ -34,3 +38,52 @@ function closeModal() {
     modalBg.style.removeProperty("transform")
   }, 800)
 }
+
+const validate = {
+  name: ({ value }) => /^[A-Za-zÀ-ÖØ-öø-ÿ -]{2,}$/.test(value),
+  email: ({ value }) =>
+    /^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/.test(value.toLowerCase()),
+  birthdate: ({ value }) => new Date(value) < new Date(),
+  number: ({ value }) => /^[0-9]+$/.test(value),
+  radioRequired: ({ elem }) =>
+    elem.querySelectorAll('input[type="radio"]:checked').length > 0,
+  checkboxRequired: ({ elem }) =>
+    elem.querySelector('input[type="checkbox"]').checked,
+}
+
+formDataToValidate.forEach((elem) => {
+  elem.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      const isValid = validate[elem.getAttribute("data-validation-type")]({
+        value: e.target.value,
+        elem,
+      })
+      elem.setAttribute("data-error-visible", !isValid)
+    })
+  })
+})
+
+function validateWholeForm() {
+  formDataToValidate.forEach((elem) => {
+    elem.querySelectorAll("input").forEach((input) => {
+      const isValid = validate[elem.getAttribute("data-validation-type")]({
+        value: input.value,
+        elem,
+      })
+      elem.setAttribute("data-error-visible", !isValid)
+    })
+  })
+
+  const isFormValid = [...formDataToValidate].every(
+    (elem) =>
+      elem.getAttribute("data-error-visible") === "false" ||
+      !elem.hasAttribute("data-error-visible")
+  )
+
+  return isFormValid
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault()
+  validateWholeForm() && form.classList.add("formSuccess")
+})

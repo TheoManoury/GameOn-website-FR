@@ -176,7 +176,9 @@ main {
   margin: 5% auto;
   width: 100%;
   max-width: 500px;
+  -webkit-animation-name: modalopen;
   animation-name: modalopen;
+  -webkit-animation-duration: var(--modal-duration);
   animation-duration: var(--modal-duration);
   background: #232323;
   border-radius: 10px;
@@ -282,6 +284,9 @@ input[data-error]::after {
 .checkbox-input:checked + .checkbox2-label .checkbox-icon {
   background: #279e7a;
 }
+.formData[data-error-visible="true"] .checkbox-icon {
+  border: 2px solid #e54858;
+}
 .checkbox2-label .checkbox-icon {
   border-radius: 4px;
   border: 0;
@@ -335,6 +340,19 @@ input[data-error]::after {
   color: #fff;
   cursor: pointer;
   border: 0;
+}
+
+.formSuccessMessage {
+  text-align: center;
+  color: #279e7a;
+  display: none;
+}
+
+.formSuccess .btn-submit {
+  display: none;
+}
+.formSuccess .formSuccessMessage {
+  display: block;
 }
 /* custom select styles */
 .custom-select {
@@ -425,6 +443,12 @@ input[data-error]::after {
   text-align: left;
   min-width: 424px;
 }
+@media screen and (max-width: 500px) {
+  .hero-content {
+    min-width: unset;
+  }
+}
+
 .hero-content::after {
   content: "";
   width: 100%;
@@ -498,7 +522,7 @@ footer {
     display: none;
   }
   .hero-headline {
-    font-size: 4.5rem;
+    font-size: 2.5rem;
     white-space: normal;
   }
   .hero-text {
@@ -517,6 +541,16 @@ footer {
   .copyrights {
     margin-top: 50px;
     text-align: center;
+  }
+}
+
+@-webkit-keyframes modalopen {
+  from {
+    opacity: 0;
+    transform: translateY(-150px);
+  }
+  to {
+    opacity: 1;
   }
 }
 
